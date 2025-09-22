@@ -25,7 +25,7 @@ resource "aws_api_gateway_integration" "options_integration" {
   content_handling = "CONVERT_TO_TEXT"
   resource_id      = local.resource_id
   rest_api_id      = var.rest_api_id
-  depends_on       = [aws_api_gateway_method.options_method]
+  depends_on       = [aws_api_gateway_method.options_method[0]]
 }
 
 resource "aws_api_gateway_method_response" "options_method_response" {
@@ -45,7 +45,7 @@ resource "aws_api_gateway_method_response" "options_method_response" {
 
   resource_id = local.resource_id
   rest_api_id = var.rest_api_id
-  depends_on  = [aws_api_gateway_method.options_method]
+  depends_on  = [aws_api_gateway_method.options_method[0]]
 }
 
 resource "aws_api_gateway_integration_response" "options_integration_response" {
@@ -66,7 +66,7 @@ resource "aws_api_gateway_integration_response" "options_integration_response" {
 
   resource_id = local.resource_id
   rest_api_id = var.rest_api_id
-  depends_on  = [aws_api_gateway_method.options_method, aws_api_gateway_method_response.options_method_response]
+  depends_on  = [aws_api_gateway_method.options_method[0], aws_api_gateway_method_response.options_method_response[0]]
 }
 
 ##### RESOURCE CALL #####
