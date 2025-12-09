@@ -13,11 +13,6 @@ resource "aws_lambda_function" "wrapped" {
     variables = local.lambda_variables
   }
 
-  vpc_config {
-    subnet_ids         = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
-    security_group_ids = [aws_security_group.lambda_sg.id]
-  }
-
   tags = merge(local.standard_tags, tomap({"name" = "${var.app_name}-wrapped"}))
 
 
@@ -66,11 +61,6 @@ resource "aws_lambda_function" "release_radar" {
     variables = local.lambda_variables
   }
 
-  vpc_config {
-    subnet_ids         = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
-    security_group_ids = [aws_security_group.lambda_sg.id]
-  }
-
   tags = merge(local.standard_tags, tomap({"name" = "${var.app_name}-release-radar"}))
 
 
@@ -117,11 +107,6 @@ resource "aws_lambda_function" "update_user_table" {
   role              = aws_iam_role.lambda_role.arn
   environment {
     variables = local.lambda_variables
-  }
-
-  vpc_config {
-    subnet_ids         = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
-    security_group_ids = [aws_security_group.lambda_sg.id]
   }
 
   tags = merge(local.standard_tags, tomap({"name" = "${var.app_name}-update-user-table"}))
