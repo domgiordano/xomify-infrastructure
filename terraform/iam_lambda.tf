@@ -17,182 +17,102 @@ resource "aws_iam_role" "lambda_role" {
 }
 
 data "aws_iam_policy_document" "lambda_role_policy" {
-  statement {
-    effect  = "Allow"
-    actions = [
-      "ec2:DescribeNetworkInterfaces",
-      "ec2:CreateNetworkInterface",
-      "ec2:DeleteNetworkInterface",
-      "ec2:DescribeInstances",
-      "ec2:AttachNetworkInterface"
-    ]
-    resources = ["*"]
-  }
+  
+  # S3 - Scoped to app bucket only
   statement {
     effect  = "Allow"
     actions = [
       "s3:PutObject",
-      "s3:GetObjectAcl",
       "s3:GetObject",
-      "s3:ListAllMyBuckets",
       "s3:GetObjectTagging",
       "s3:ListBucket",
       "s3:PutObjectTagging",
       "s3:GetBucketLocation",
-      "s3:PutObjectAcl",
-      "s3:GetObjectVersion",
-      "s3:DeleteObject",
-      "s3:DeleteObjectVersion"
-    ]
-    resources = ["*"]
-  }
-  statement {
-    effect  = "Allow"
-    actions = [
-      "ssm:PutParameters",
-      "ssm:PutParameter",
-      "ssm:DeleteParameter",
-      "ssm:DeleteParameters",
-      "ssm:GetParameters",
-      "ssm:GetParameter",
-      "ssm:GetParameterHistory",
-      "ssm:GetParametersByPath"
-    ]
-    resources = ["*"]
-  }
-  statement {
-    effect  = "Allow"
-    actions = [
-      "secretsmanager:GetResourcePolicy",
-      "secretsmanager:GetSecretValue",
-      "secretsmanager:DescribeSecret",
-      "secretsmanager:ListSecrets",
-      "secretsmanager:ListSecretVersionIds",
-      "secretsmanager:UpdateSecretVersionStage",
-      "secretsmanager:PutSecretValue",
-      "secretsmanager:RotateSecret"
-    ]
-    resources = ["arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:secret:${var.app_name}-*"]
-  }
-  statement {
-    effect  = "Allow"
-    actions = [
-      "secretsmanager:GetRandomPassword"
-    ]
-    resources = ["*"]
-  }
-  statement {
-    effect  = "Allow"
-    actions = [
-      "logs:ListLogDeliveries",
-      "logs:DescribeResourcePolicies",
-      "logs:DescribeLogGroups",
-      "logs:DescribeLogStreams",
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:CreateLogDelivery",
-      "logs:GetLogDelivery",
-      "logs:UpdateLogDelivery",
-      "logs:DeleteLogDelivery",
-      "logs:PutLogEvents",
-      "logs:GetLogEvents",
-      "logs:FilterLogEvents"
-    ]
-    resources = ["arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:log-group:/aws/lambda/${var.app_name}*"]
-  }
-  statement {
-    effect  = "Allow"
-    actions = [
-      "kms:ListAliases",
-      "kms:ListKeyPolicies",
-      "kms:ListResourceTags",
-      "kms:ListGrants",
-      "kms:ListKeys",
-      "kms:ListRetirableGrants",
-      "kms:DescribeCustomKeyStores",
-      "kms:DescribeKey",
-      "kms:GetKeyPolicy",
-      "kms:GetParametersForImport",
-      "kms:GetKeyRotationStatus",
-      "kms:GetPublicKey",
-      "kms:TagResource",
-      "kms:UntagResource",
-      "kms:CancelKeyDeletion",
-      "kms:ConnectCustomKeyStore",
-      "kms:CreateAlias",
-      "kms:CreateCustomKeyStore",
-      "kms:CreateKey",
-      "kms:Decrypt",
-      "kms:DeleteAlias",
-      "kms:DeleteCustomKeyStore",
-      "kms:DeleteImportedKeyMaterial",
-      "kms:DisableKey",
-      "kms:DisableKeyRotation",
-      "kms:DisconnectCustomKeyStore",
-      "kms:EnableKey",
-      "kms:EnableKeyRotation",
-      "kms:Encrypt",
-      "kms:GenerateDataKey",
-      "kms:GenerateDataKeyPair",
-      "kms:GenerateDataKeyWithoutPlainText",
-      "kms:GenerateDataKeyPairWithoutPlainText",
-      "kms:GenerateMac",
-      "kms:GenerateRandom",
-      "kms:ImportKeyMaterial",
-      "kms:ReEncryptFrom",
-      "kms:ReEncryptTo",
-      "kms:ReplicateKey",
-      "kms:ScheduleKeyDeletion",
-      "kms:Sign",
-      "kms:SynchronizeMultiRegionKey",
-      "kms:UpdateAlias",
-      "kms:UpdateCustomKeyStore",
-      "kms:UpdateKeyDescription",
-      "kms:UpdatePrimaryRegion",
-      "kms:Verify",
-      "kms:VerifyMac",
-      "kms:CreateGrant",
-      "kms:PutKeyPolicy",
-      "kms:RetireGrant",
-      "kms:RevokeGrant"
+      "s3:DeleteObject"
     ]
     resources = [
-      "arn:aws:kms:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:alias/*",
-      "arn:aws:kms:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:key/*"
+      aws_s3_bucket.web_app.arn,
+      "${aws_s3_bucket.web_app.arn}/*"
     ]
   }
+
+  # SSM - Scoped to app parameters only
+  statement {
+    effect  = "Allow"
+    actions = [
+      "ssm:GetParameters",
+      "ssm:GetParameter",
+      "ssm:GetParametersByPath"
+    ]
+    resources = [
+      "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:parameter/${var.app_name}/*"
+    ]
+  }
+
+  # CloudWatch Logs
+  statement {
+    effect  = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams"
+    ]
+    resources = [
+      "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:log-group:/aws/lambda/${var.app_name}*",
+      "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:log-group:/aws/lambda/${var.app_name}*:*"
+    ]
+  }
+
+  # KMS - For DynamoDB encryption
+  statement {
+    effect  = "Allow"
+    actions = [
+      "kms:Decrypt",
+      "kms:Encrypt",
+      "kms:GenerateDataKey",
+      "kms:DescribeKey"
+    ]
+    resources = [
+      aws_kms_key.web_app.arn
+    ]
+  }
+
+  # Lambda - Invoke own functions
   statement {
     effect  = "Allow"
     actions = [
       "lambda:InvokeFunction",
-      "lambda:GetFunction",
-      "lambda:GetAlias",
-      "lambda:ListFunctions",
-      "lambda:ListAliases",
-      "lambda:ListVersionsByFunction"
+      "lambda:GetFunction"
     ]
     resources = [
       "arn:aws:lambda:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:function:${var.app_name}*"
     ]
   }
+
+  # API Gateway - Execute API
   statement {
     effect    = "Allow"
     actions   = ["execute-api:Invoke"]
     resources = [
-      "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:${aws_api_gateway_rest_api.api_gateway.id}/*/*/*"
+      "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/*/*"
     ]
   }
+
+  # X-Ray Tracing
   statement {
     effect  = "Allow"
     actions = [
       "xray:PutTraceSegments",
       "xray:PutTelemetryRecords",
       "xray:GetSamplingRules",
-      "xray:GetSamplingTargets",
-      "xray:GetSamplingStatisticSummaries"
+      "xray:GetSamplingTargets"
     ]
     resources = ["*"]
   }
+
+  # DynamoDB - Scoped to app tables
   statement {
     effect  = "Allow"
     actions = [
@@ -203,18 +123,12 @@ data "aws_iam_policy_document" "lambda_role_policy" {
       "dynamodb:BatchWriteItem",
       "dynamodb:PutItem",
       "dynamodb:UpdateItem",
-      "dynamodb:DescribeStream",
-      "dynamodb:GetShardIterator",
-      "dynamodb:GetRecords",
       "dynamodb:DeleteItem",
-      "dynamodb:CreateTable",
-      "dynamodb:DeleteTable",
       "dynamodb:DescribeTable"
     ]
     resources = [
       "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:table/${var.app_name}*",
-      "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:table/*/index/*",
-      "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:table/*/stream/*"
+      "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:table/${var.app_name}*/index/*"
     ]
   }
 }
@@ -224,6 +138,3 @@ resource "aws_iam_role_policy" "lambda_role_policy" {
   role   = aws_iam_role.lambda_role.id
   policy = data.aws_iam_policy_document.lambda_role_policy.json
 }
-
-
-
