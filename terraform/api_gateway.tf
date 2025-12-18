@@ -158,19 +158,12 @@ module "post_user_table_endpoint" {
 }
 
 # AWS Permissions - user table
-resource "aws_lambda_permission" "update_user_table_data_post_permission"{
-  statement_id  = "AllowPostUpdateUserTable"
+resource "aws_lambda_permission" "update_user_table_data_permission"{
+  statement_id  = "AllowUpdateUserTableApi"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.update_user_table.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/POST/${aws_api_gateway_resource.user_resource.path_part}/user-table"
-}
-resource "aws_lambda_permission" "get_user_table_data_post_permission"{
-  statement_id  = "AllowGetUpdateUserTable"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.update_user_table.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/GET/${aws_api_gateway_resource.user_resource.path_part}/user-table"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/*"
 }
 
 #**********************
@@ -239,26 +232,10 @@ module "put_wrapped_endpoint" {
 }
 
 # AWS Permissions /wrapped
-resource "aws_lambda_permission" "wrapped_data_post_permission"{
-  statement_id  = "AllowPostWrappedData"
+resource "aws_lambda_permission" "wrapped_data_permission"{
+  statement_id  = "AllowWrappedDataApi"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.wrapped.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/POST/${aws_api_gateway_resource.wrapped_resource.path_part}/data"
-}
-
-resource "aws_lambda_permission" "wrapped_data_get_permission"{
-  statement_id  = "AllowGetWrappedData"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.wrapped.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/GET/${aws_api_gateway_resource.wrapped_resource.path_part}/data"
-}
-
-resource "aws_lambda_permission" "wrapped_data_put_permission"{
-  statement_id  = "AllowPutWrappedData"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.wrapped.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/PUT/${aws_api_gateway_resource.wrapped_resource.path_part}/data"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/*"
 }
