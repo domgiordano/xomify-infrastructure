@@ -1,6 +1,6 @@
 
 moved {
-  from = aws_dynamodb_table.users
+  from = aws_dynamodb_table.wrapped
   to = aws_dynamodb_table.users
 }
 resource "aws_dynamodb_table" "users"{
