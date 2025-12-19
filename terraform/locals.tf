@@ -17,6 +17,7 @@ locals {
     USERS_TABLE_NAME           = aws_dynamodb_table.users.id
     WRAPPED_HISTORY_TABLE_NAME = aws_dynamodb_table.wrapped_history.id
     AWS_ACCOUNT_ID             = data.aws_caller_identity.web_app_account.account_id
+    FROM_EMAIL                 = var.from_email 
   }
 
   # API Gateway allowed headers

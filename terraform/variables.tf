@@ -119,3 +119,11 @@ variable "lambda_timeout" {
   type        = number
   default     = 900
 }
+
+# Email Service
+variable "from_email" {
+  description = "Email address to send from"
+  type        = string
+  default     = "noreply@xomify.com"
+}
+

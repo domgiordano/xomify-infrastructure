@@ -38,3 +38,16 @@ resource "aws_cloudwatch_event_target" "release_radar_target" {
   target_id = "${var.app_name}-release-radar-target-id"
   arn       = aws_lambda_function.release_radar.arn
 }
+
+## CHRON JOB - WRAPPED EMAIL
+resource "aws_cloudwatch_event_rule" "wrapped_email_schedule" {
+  name        ="${var.app_name}-wrapped-email-schedule"
+  description = "Trigger Wrapped Email Lambda function on the first day of every month"
+  schedule_expression = "cron(0 12 1 * ? *)"  # Runs at 8am on the first day of every month
+}
+
+resource "aws_cloudwatch_event_target" "release_radar_target" {
+  rule      = aws_cloudwatch_event_rule.release_radar_schedule.name
+  target_id = "${var.app_name}-release-radar-target-id"
+  arn       = aws_lambda_function.release_radar.arn
+}
