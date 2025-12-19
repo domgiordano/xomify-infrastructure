@@ -13,11 +13,11 @@ resource "aws_cloudwatch_log_group" "api_log_group" {
     tags = merge(local.standard_tags, tomap({ "name"= "${var.app_name}-APIGW-Access-Logs"}))
 }
 
-## CHRON JOB - WRAPPED
+## CRON JOB - WRAPPED
 resource "aws_cloudwatch_event_rule" "wrapped_schedule" {
   name        ="${var.app_name}-wrapped-schedule"
   description = "Trigger Wrapped Lambda function on the first day of every month"
-  schedule_expression = "cron(0 4 1 * ? *)"  # Runs at midnight on the first day of every month
+  schedule_expression = "cron(0 4 1 * ? *)"  # Runs at 4AM UTC on the first day of every month
 }
 
 resource "aws_cloudwatch_event_target" "wrapped_target" {
@@ -26,11 +26,11 @@ resource "aws_cloudwatch_event_target" "wrapped_target" {
   arn       = aws_lambda_function.wrapped.arn
 }
 
-## CHRON JOB - RELEASE RADAR
+## CRON JOB - RELEASE RADAR
 resource "aws_cloudwatch_event_rule" "release_radar_schedule" {
   name        ="${var.app_name}-release-radar-schedule"
-  description = "Trigger Release Radar Lambda function on every Friday at 4AM"
-  schedule_expression = "cron(0 12 ? * FRI *)"  # Runs at 8AM Eastern on every Friday
+  description = "Trigger Release Radar Lambda function on every Friday at 12PM UTC"
+  schedule_expression = "cron(0 12 ? * FRI *)"  # Runs at 12PM UTC (8AM Eastern) on every Friday
 }
 
 resource "aws_cloudwatch_event_target" "release_radar_target" {
@@ -39,15 +39,15 @@ resource "aws_cloudwatch_event_target" "release_radar_target" {
   arn       = aws_lambda_function.release_radar.arn
 }
 
-## CHRON JOB - WRAPPED EMAIL
+## CRON JOB - WRAPPED EMAIL
 resource "aws_cloudwatch_event_rule" "wrapped_email_schedule" {
   name        ="${var.app_name}-wrapped-email-schedule"
-  description = "Trigger Wrapped Email Lambda function on the first day of every month"
-  schedule_expression = "cron(0 12 1 * ? *)"  # Runs at 8am on the first day of every month
+  description = "Trigger Wrapped Email Lambda function on the first day of every month at 12PM UTC"
+  schedule_expression = "cron(0 12 1 * ? *)"  # Runs at 12PM UTC (8AM Eastern) on the first day of every month
 }
 
-resource "aws_cloudwatch_event_target" "release_radar_target" {
-  rule      = aws_cloudwatch_event_rule.release_radar_schedule.name
-  target_id = "${var.app_name}-release-radar-target-id"
-  arn       = aws_lambda_function.release_radar.arn
+resource "aws_cloudwatch_event_target" "wrapped_email_target" {
+  rule      = aws_cloudwatch_event_rule.wrapped_email_schedule.name
+  target_id = "${var.app_name}-wrapped-email-target-id"
+  arn       = aws_lambda_function.wrapped_email.arn
 }
