@@ -12,12 +12,13 @@ locals {
 
   # Lambda environment variables
   lambda_variables = {
-    APP_NAME                   = var.app_name
-    DYNAMODB_KMS_ALIAS         = aws_kms_alias.dynamodb.name
-    USERS_TABLE_NAME           = aws_dynamodb_table.users.id
-    WRAPPED_HISTORY_TABLE_NAME = aws_dynamodb_table.wrapped_history.id
-    AWS_ACCOUNT_ID             = data.aws_caller_identity.web_app_account.account_id
-    FROM_EMAIL                 = var.from_email 
+    APP_NAME                         = var.app_name
+    DYNAMODB_KMS_ALIAS               = aws_kms_alias.dynamodb.name
+    USERS_TABLE_NAME                 = aws_dynamodb_table.users.id
+    WRAPPED_HISTORY_TABLE_NAME       = aws_dynamodb_table.wrapped_history.id
+    RELEASE_RADAR_HISTORY_TABLE_NAME = aws_dynamodb_table.release_radar_history.id
+    AWS_ACCOUNT_ID                   = data.aws_caller_identity.web_app_account.account_id
+    FROM_EMAIL                       = var.from_email 
   }
 
   # API Gateway allowed headers
