@@ -241,7 +241,7 @@ resource "aws_lambda_permission" "wrapped_data_permission"{
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.wrapped.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/wrapped/*"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/*"
 }
 
 #**********************
@@ -333,5 +333,5 @@ resource "aws_lambda_permission" "release_radar_data_permission"{
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.release_radar.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/release-radar/*"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/*"
 }
