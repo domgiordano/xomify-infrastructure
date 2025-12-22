@@ -67,7 +67,11 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     module.post_wrapped_endpoint,
     module.put_wrapped_endpoint,
     module.post_user_table_endpoint,
-    module.get_user_table_endpoint
+    module.get_user_table_endpoint,
+    module.get_release_radar_history_endpoint,
+    module.get_release_radar_week_endpoint,
+    module.get_release_radar_check_endpoint,
+    module.post_release_radar_backfill_endpoint
   ]
 }
 
@@ -237,5 +241,97 @@ resource "aws_lambda_permission" "wrapped_data_permission"{
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.wrapped.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/*"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/wrapped/*"
+}
+
+#**********************
+# RELEASE RADAR
+# /release-radar
+#**********************
+
+resource "aws_api_gateway_resource" "release_radar_resource" {
+  path_part   = "release-radar"
+  parent_id   = aws_api_gateway_rest_api.api_gateway.root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.api_gateway.id
+}
+
+# GET /release-radar/history
+module "get_release_radar_history_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.release_radar_resource.id
+  path_part               = "history"
+  http_method             = "GET"
+  allow_methods           = ["GET", "OPTIONS"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.release_radar.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# GET /release-radar/week
+module "get_release_radar_week_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.release_radar_resource.id
+  path_part               = "week"
+  http_method             = "GET"
+  allow_methods           = ["GET", "OPTIONS"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.release_radar.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# GET /release-radar/check
+module "get_release_radar_check_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.release_radar_resource.id
+  path_part               = "check"
+  http_method             = "GET"
+  allow_methods           = ["GET", "OPTIONS"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.release_radar.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# POST /release-radar/backfill
+module "post_release_radar_backfill_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.release_radar_resource.id
+  path_part               = "backfill"
+  http_method             = "POST"
+  allow_methods           = ["POST"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.release_radar.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# AWS Permissions /release-radar
+resource "aws_lambda_permission" "release_radar_data_permission"{
+  statement_id  = "AllowReleaseRadarDataApi"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.release_radar.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/release-radar/*"
 }

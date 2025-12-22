@@ -1,8 +1,5 @@
 
-moved {
-  from = aws_dynamodb_table.wrapped
-  to = aws_dynamodb_table.users
-}
+
 resource "aws_dynamodb_table" "users"{
     name = "${var.app_name}-users"
     billing_mode = "PAY_PER_REQUEST"
@@ -55,5 +52,35 @@ resource "aws_dynamodb_table" "wrapped_history"{
     }
 
     tags = merge(local.standard_tags, tomap({ "name"= "${var.app_name}-wrapped-history"}))
+
+}
+
+resource "aws_dynamodb_table" "release_radar_history"{
+    name = "${var.app_name}-release-radar-history"
+    billing_mode = "PAY_PER_REQUEST"
+    read_capacity = 0
+    write_capacity = 0
+    hash_key = "email"
+    range_key = "weekKey"
+
+    server_side_encryption {
+      enabled = true
+      kms_key_arn = aws_kms_alias.dynamodb.target_key_arn
+    }
+
+    point_in_time_recovery {
+        enabled = true
+    }
+
+    attribute {
+        name = "email"
+        type = "S"
+    }
+    attribute {
+        name = "weekKey"
+        type = "S"
+    }
+
+    tags = merge(local.standard_tags, tomap({ "name"= "${var.app_name}-release-radar-history"}))
 
 }

@@ -6,6 +6,18 @@ resource "aws_cloudwatch_log_group" "users_db_log_group" {
     tags = merge(local.standard_tags, tomap({ "name"= "${var.app_name}-users"}))
 }
 
+resource "aws_cloudwatch_log_group" "wrapped_history_db_log_group" {
+    name = aws_dynamodb_table.wrapped_history.id
+    retention_in_days = 14
+    tags = merge(local.standard_tags, tomap({ "name"= "${var.app_name}-wrapped-history"}))
+}
+
+resource "aws_cloudwatch_log_group" "release_radar_history_db_log_group" {
+    name = aws_dynamodb_table.release_radar_history.id
+    retention_in_days = 14
+    tags = merge(local.standard_tags, tomap({ "name"= "${var.app_name}-release-radar-history"}))
+}
+
 ## APIGW
 resource "aws_cloudwatch_log_group" "api_log_group" {
     name = aws_api_gateway_rest_api.api_gateway.id
@@ -50,4 +62,17 @@ resource "aws_cloudwatch_event_target" "wrapped_email_target" {
   rule      = aws_cloudwatch_event_rule.wrapped_email_schedule.name
   target_id = "${var.app_name}-wrapped-email-target-id"
   arn       = aws_lambda_function.wrapped_email.arn
+}
+
+## CRON JOB - RELEASE RADAR EMAIL
+resource "aws_cloudwatch_event_rule" "release_radar_email_schedule" {
+  name        ="${var.app_name}-release-radar-email-schedule"
+  description = "Trigger Release Radar Email Lambda function on every Friday at 12PM UTC"
+  schedule_expression = "cron(15 12 ? * FRI *)"  # Runs at 12:15 PM UTC (8:15 AM Eastern) on every Friday
+}
+
+resource "aws_cloudwatch_event_target" "release_radar_email_target" {
+  rule      = aws_cloudwatch_event_rule.release_radar_email_schedule.name
+  target_id = "${var.app_name}-release-radar-email-target-id"
+  arn       = aws_lambda_function.release_radar_email.arn
 }
