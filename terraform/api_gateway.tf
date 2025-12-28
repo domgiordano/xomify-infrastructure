@@ -70,6 +70,7 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     module.get_user_table_endpoint,
     module.get_release_radar_history_endpoint,
     module.get_release_radar_week_endpoint,
+    module.get_release_radar_live_endpoint,
     module.get_release_radar_check_endpoint,
     module.post_release_radar_backfill_endpoint
   ]
@@ -297,6 +298,23 @@ module "get_release_radar_check_endpoint" {
   rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
   parent_resource_id      = aws_api_gateway_resource.release_radar_resource.id
   path_part               = "check"
+  http_method             = "GET"
+  allow_methods           = ["GET", "OPTIONS"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.release_radar.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+# GET /release-radar/live
+module "get_release_radar_live_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.release_radar_resource.id
+  path_part               = "live"
   http_method             = "GET"
   allow_methods           = ["GET", "OPTIONS"]
   allow_headers           = local.api_allow_headers
