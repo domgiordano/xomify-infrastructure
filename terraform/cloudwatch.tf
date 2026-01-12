@@ -42,7 +42,7 @@ resource "aws_cloudwatch_event_target" "wrapped_target" {
 resource "aws_cloudwatch_event_rule" "release_radar_schedule" {
   name                = "${var.app_name}-release-radar-schedule"
   description         = "Triggers weekly release radar processing every Saturday at 7 AM Eastern"
-  schedule_expression = "cron(0 7 ? * SAT *)"
+  schedule_expression = "cron(0 11 ? * SAT *)"
 }
 
 resource "aws_cloudwatch_event_target" "release_radar_target" {
@@ -67,8 +67,8 @@ resource "aws_cloudwatch_event_target" "wrapped_email_target" {
 ## CRON JOB - RELEASE RADAR EMAIL
 resource "aws_cloudwatch_event_rule" "release_radar_email_schedule" {
   name                = "${var.app_name}-release-radar-email-schedule"
-  description         = "Triggers weekly release radar email every Saturday at 7:30 AM Eastern"
-  schedule_expression = "cron(30 7 ? * SAT *)"
+  description         = "Triggers weekly release radar email every Saturday at 8 AM Eastern"
+  schedule_expression = "cron(0 12 ? * SAT *)"
 }
 
 resource "aws_cloudwatch_event_target" "release_radar_email_target" {
