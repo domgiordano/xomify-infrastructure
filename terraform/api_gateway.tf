@@ -63,8 +63,8 @@ resource "aws_api_gateway_deployment" "api_deploy" {
   depends_on = [
     aws_api_gateway_resource.wrapped_resource,
     aws_api_gateway_resource.user_resource,
-    aws_api_gateway_resource.release_radar,
-    aws_api_gateway_resource.friends,
+    aws_api_gateway_resource.release_radar_resource,
+    aws_api_gateway_resource.friends_resource,
     module.get_wrapped_endpoint,
     module.post_wrapped_endpoint,
     module.put_wrapped_endpoint,
