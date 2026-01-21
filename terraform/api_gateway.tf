@@ -63,6 +63,8 @@ resource "aws_api_gateway_deployment" "api_deploy" {
   depends_on = [
     aws_api_gateway_resource.wrapped_resource,
     aws_api_gateway_resource.user_resource,
+    aws_api_gateway_resource.release_radar,
+    aws_api_gateway_resource.friends,
     module.get_wrapped_endpoint,
     module.post_wrapped_endpoint,
     module.put_wrapped_endpoint,
@@ -72,7 +74,14 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     module.get_release_radar_week_endpoint,
     module.get_release_radar_live_endpoint,
     module.get_release_radar_check_endpoint,
-    module.post_release_radar_backfill_endpoint
+    module.post_release_radar_backfill_endpoint,
+    module.get_friends_list_endpoint,
+    module.get_friends_profile_endpoint,
+    module.get_friends_pending_endpoint,
+    module.get_friends_search_endpoint,
+    module.post_friends_accept_endpoint,
+    module.post_friends_reject_endpoint,
+    module.post_friends_request_endpoint,
   ]
 }
 
@@ -350,6 +359,150 @@ resource "aws_lambda_permission" "release_radar_data_permission"{
   statement_id  = "AllowReleaseRadarDataApi"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.release_radar.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/*"
+}
+
+#**********************
+# Friends
+# /friends
+#**********************
+
+resource "aws_api_gateway_resource" "friends_resource" {
+  path_part   = "friends"
+  parent_id   = aws_api_gateway_rest_api.api_gateway.root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.api_gateway.id
+}
+
+# GET /friends/list
+module "get_friends_list_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.friends_resource.id
+  path_part               = "list"
+  http_method             = "GET"
+  allow_methods           = ["GET", "OPTIONS"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.friends.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# GET /friends/search
+module "get_friends_search_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.friends_resource.id
+  path_part               = "search"
+  http_method             = "GET"
+  allow_methods           = ["GET", "OPTIONS"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.friends.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# GET /friends/pending
+module "get_friends_pending_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.friends_resource.id
+  path_part               = "pending"
+  http_method             = "GET"
+  allow_methods           = ["GET", "OPTIONS"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.friends.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# GET /friends/profile
+module "get_friends_profile_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.friends_resource.id
+  path_part               = "profile"
+  http_method             = "GET"
+  allow_methods           = ["GET", "OPTIONS"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.friends.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# POST /friends/request
+module "post_friends_request_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.friends_resource.id
+  path_part               = "request"
+  http_method             = "POST"
+  allow_methods           = ["POST"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.friends.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+# POST /friends/accept
+module "post_friends_accept_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.friends_resource.id
+  path_part               = "accept"
+  http_method             = "POST"
+  allow_methods           = ["POST"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.friends.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+# POST /friends/reject
+module "post_friends_reject_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.friends_resource.id
+  path_part               = "reject"
+  http_method             = "POST"
+  allow_methods           = ["POST"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.friends.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# AWS Permissions /friends
+resource "aws_lambda_permission" "friends_data_permission"{
+  statement_id  = "AllowFriendsDataApi"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.friends.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/*"
 }
