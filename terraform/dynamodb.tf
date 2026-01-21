@@ -159,7 +159,7 @@ resource "aws_dynamodb_table" "group_tracks" {
     read_capacity  = 0
     write_capacity = 0
     hash_key       = "groupId"
-    range_key      = "trackId_timestamp"
+    range_key      = "trackIdTimestamp"
 
     server_side_encryption {
       enabled = true
@@ -176,7 +176,7 @@ resource "aws_dynamodb_table" "group_tracks" {
     }
 
     attribute {
-        name = "trackId_timestamp"
+        name = "trackIdTimestamp"
         type = "S"
     }
 
