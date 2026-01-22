@@ -65,13 +65,14 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     aws_api_gateway_resource.user_resource,
     aws_api_gateway_resource.release_radar_resource,
     aws_api_gateway_resource.friends_resource,
-    
+
     module.get_wrapped_endpoint,
     module.post_wrapped_endpoint,
     module.put_wrapped_endpoint,
 
     module.post_user_table_endpoint,
     module.get_user_table_endpoint,
+    module.get_all_user_table_endpoint,
     module.get_release_radar_history_endpoint,
     module.get_release_radar_week_endpoint,
     module.get_release_radar_live_endpoint,
@@ -145,6 +146,24 @@ module "get_user_table_endpoint" {
   rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
   parent_resource_id      = aws_api_gateway_resource.user_resource.id
   path_part               = "user-table"
+  http_method             = "GET"
+  allow_methods           = ["GET", "OPTIONS"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.update_user_table.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# GET /user/all
+module "get_all_user_table_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.user_resource.id
+  path_part               = "all"
   http_method             = "GET"
   allow_methods           = ["GET", "OPTIONS"]
   allow_headers           = local.api_allow_headers
