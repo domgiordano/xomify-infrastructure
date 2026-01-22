@@ -151,7 +151,7 @@ module "get_user_table_endpoint" {
   allow_headers           = local.api_allow_headers
   integration_type        = "AWS_PROXY"
   integration_http_method = "POST"
-  uri                     = aws_lambda_function.update_user_table.invoke_arn
+  uri                     = aws_lambda_function.user.invoke_arn
   authorization           = "CUSTOM"
   authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
   standard_tags           = local.standard_tags
@@ -169,7 +169,7 @@ module "get_all_user_table_endpoint" {
   allow_headers           = local.api_allow_headers
   integration_type        = "AWS_PROXY"
   integration_http_method = "POST"
-  uri                     = aws_lambda_function.update_user_table.invoke_arn
+  uri                     = aws_lambda_function.user.invoke_arn
   authorization           = "CUSTOM"
   authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
   standard_tags           = local.standard_tags
@@ -187,7 +187,7 @@ module "post_user_table_endpoint" {
   allow_headers           = local.api_allow_headers
   integration_type        = "AWS_PROXY"
   integration_http_method = "POST"
-  uri                     = aws_lambda_function.update_user_table.invoke_arn
+  uri                     = aws_lambda_function.user.invoke_arn
   authorization           = "CUSTOM"
   authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
   standard_tags           = local.standard_tags
@@ -195,10 +195,10 @@ module "post_user_table_endpoint" {
 }
 
 # AWS Permissions - user table
-resource "aws_lambda_permission" "update_user_table_data_permission"{
+resource "aws_lambda_permission" "user_data_permission"{
   statement_id  = "AllowUpdateUserTableApi"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.update_user_table.function_name
+  function_name = aws_lambda_function.user.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/*"
 }

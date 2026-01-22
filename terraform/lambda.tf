@@ -88,9 +88,9 @@ resource "aws_lambda_permission" "release_radar_cloudwatch" {
   source_arn    = aws_cloudwatch_event_rule.release_radar_schedule.arn
 }
 
-# Update User Table Lambda - API endpoint for user management
-resource "aws_lambda_function" "update_user_table" {
-  function_name    = "${var.app_name}-update-user-table"
+# User Lambda - API endpoint for user management
+resource "aws_lambda_function" "user" {
+  function_name    = "${var.app_name}-user"
   filename         = "./templates/lambda_stub.zip"
   source_code_hash = filebase64sha256("./templates/lambda_stub.zip")
   handler          = "handler.handler"
@@ -108,7 +108,7 @@ resource "aws_lambda_function" "update_user_table" {
     mode = var.lambda_trace_mode
   }
 
-  tags = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-update-user-table" }))
+  tags = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-user" }))
 
   lifecycle {
     ignore_changes = [
