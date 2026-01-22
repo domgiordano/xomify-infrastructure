@@ -65,9 +65,11 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     aws_api_gateway_resource.user_resource,
     aws_api_gateway_resource.release_radar_resource,
     aws_api_gateway_resource.friends_resource,
+    
     module.get_wrapped_endpoint,
     module.post_wrapped_endpoint,
     module.put_wrapped_endpoint,
+
     module.post_user_table_endpoint,
     module.get_user_table_endpoint,
     module.get_release_radar_history_endpoint,
@@ -75,6 +77,7 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     module.get_release_radar_live_endpoint,
     module.get_release_radar_check_endpoint,
     module.post_release_radar_backfill_endpoint,
+
     module.get_friends_list_endpoint,
     module.get_friends_profile_endpoint,
     module.get_friends_pending_endpoint,
@@ -82,6 +85,7 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     module.post_friends_accept_endpoint,
     module.post_friends_reject_endpoint,
     module.post_friends_request_endpoint,
+    module.delete_friends_remove_endpoint
   ]
 }
 
@@ -488,6 +492,24 @@ module "post_friends_reject_endpoint" {
   path_part               = "reject"
   http_method             = "POST"
   allow_methods           = ["POST"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.friends.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# DELETE /friends/remove
+module "delete_friends_remove_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.friends_resource.id
+  path_part               = "remove"
+  http_method             = "DELETE"
+  allow_methods           = ["DELETE", "OPTIONS"]
   allow_headers           = local.api_allow_headers
   integration_type        = "AWS_PROXY"
   integration_http_method = "POST"
