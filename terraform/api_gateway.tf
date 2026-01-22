@@ -82,7 +82,7 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     module.get_friends_list_endpoint,
     module.get_friends_profile_endpoint,
     module.get_friends_pending_endpoint,
-    module.get_friends_search_endpoint,
+    module.get_friends_all_endpoint,
     module.post_friends_accept_endpoint,
     module.post_friends_reject_endpoint,
     module.post_friends_request_endpoint,
@@ -415,12 +415,12 @@ module "get_friends_list_endpoint" {
   allow_origin            = "*"
 }
 
-# GET /friends/search
-module "get_friends_search_endpoint" {
+# GET /friends/all
+module "get_friends_all_endpoint" {
   source                  = "./modules/api_gateway"
   rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
   parent_resource_id      = aws_api_gateway_resource.friends_resource.id
-  path_part               = "search"
+  path_part               = "all"
   http_method             = "GET"
   allow_methods           = ["GET", "OPTIONS"]
   allow_headers           = local.api_allow_headers
