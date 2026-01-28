@@ -69,7 +69,8 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     module.wrapped_endpoints,
     module.user_endpoints,
     module.release_radar_endpoints,
-    module.friends_endpoints
+    module.friends_endpoints,
+    module.ratings_endpoints
   ]
 }
 
