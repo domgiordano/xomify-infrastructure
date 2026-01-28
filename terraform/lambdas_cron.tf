@@ -28,7 +28,7 @@ locals {
 }
 
 resource "aws_lambda_function" "cron" {
-  for_each         = local.cron_lambdas
+  for_each         = { for lambda in local.cron_lambdas : lambda.name => lambda }
   function_name    = "${var.app_name}-cron-${each.value.name}"
   description      = each.value.description
   filename         = "./templates/lambda_stub.zip"
@@ -66,14 +66,14 @@ resource "aws_lambda_function" "cron" {
 }
 
 resource "aws_cloudwatch_event_rule" "cron_schedule" {
-  for_each            = local.cron_lambdas
+  for_each            = { for lambda in local.cron_lambdas : lambda.name => lambda }
   name                = "${var.app_name}-${each.value.name}-schedule"
   description         = each.value.cron_description
   schedule_expression = each.value.cron_schedule
 }
 
 resource "aws_cloudwatch_event_target" "cron_target" {
-  for_each  = local.cron_lambdas
+  for_each  = { for lambda in local.cron_lambdas : lambda.name => lambda }
   rule      = aws_cloudwatch_event_rule.cron_schedule[each.value.name].name
   target_id = "${var.app_name}-${each.value.name}-target-id"
   arn       = aws_lambda_function.cron[each.value.name].arn

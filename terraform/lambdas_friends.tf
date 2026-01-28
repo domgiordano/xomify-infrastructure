@@ -52,7 +52,7 @@ locals {
 }
 
 resource "aws_lambda_function" "friends" {
-  for_each         = local.friends_lambdas
+  for_each         = { for lambda in local.friends_lambdas : lambda.name => lambda }
   function_name    = "${var.app_name}-friends-${each.value.name}"
   description      = each.value.description
   filename         = "./templates/lambda_stub.zip"
