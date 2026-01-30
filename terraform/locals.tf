@@ -19,6 +19,7 @@ locals {
     RELEASE_RADAR_HISTORY_TABLE_NAME = aws_dynamodb_table.release_radar_history.id
     FRIENDSHIPS_TABLE_NAME           = aws_dynamodb_table.friendships.id
     GROUPS_TABLE_NAME                = aws_dynamodb_table.groups.id
+    GROUP_MEMBERS_TABLE_NAME         = aws_dynamodb_table.group_members.id
     GROUP_TRACKS_TABLE_NAME          = aws_dynamodb_table.group_tracks.id
     TRACK_RATINGS_TABLE_NAME         = aws_dynamodb_table.track_ratings.id
     AWS_ACCOUNT_ID                   = data.aws_caller_identity.web_app_account.account_id

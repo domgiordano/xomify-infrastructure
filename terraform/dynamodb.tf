@@ -151,7 +151,47 @@ resource "aws_dynamodb_table" "groups" {
 }
 
 ########################################
-# 6. xomify-group-tracks
+# 6. xomify-group-members
+########################################
+resource "aws_dynamodb_table" "groups_members" {
+    name           = "${var.app_name}-group-members"
+    billing_mode   = "PAY_PER_REQUEST"
+    read_capacity  = 0
+    write_capacity = 0
+    hash_key       = "email"
+    range_key      = "groupId"
+
+    server_side_encryption {
+      enabled = true
+      kms_key_arn = aws_kms_alias.dynamodb.target_key_arn
+    }
+
+    point_in_time_recovery {
+        enabled = true
+    }
+
+    attribute {
+        name = "email"
+        type = "S"
+    }
+    attribute {
+        name = "groupId"
+        type = "S"
+    }
+
+    # GSI: Lookup members by groupId
+    global_secondary_index {
+        name               = "groupId-email-index"
+        hash_key           = "groupId"
+        range_key          = "email"
+        projection_type    = "ALL"
+    }
+
+    tags = merge(local.standard_tags, tomap({ "name"= "${var.app_name}-groups-members"}))
+}
+
+########################################
+# 7. xomify-group-tracks
 ########################################
 resource "aws_dynamodb_table" "group_tracks" {
     name           = "${var.app_name}-group-tracks"
@@ -186,7 +226,7 @@ resource "aws_dynamodb_table" "group_tracks" {
 }
 
 ########################################
-# 7. xomify-track-ratings
+# 8. xomify-track-ratings
 ########################################
 resource "aws_dynamodb_table" "track_ratings" {
     name           = "${var.app_name}-track-ratings"
