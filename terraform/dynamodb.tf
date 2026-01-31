@@ -153,7 +153,7 @@ resource "aws_dynamodb_table" "groups" {
 ########################################
 # 6. xomify-group-members
 ########################################
-resource "aws_dynamodb_table" "groups_members" {
+resource "aws_dynamodb_table" "group_members" {
     name           = "${var.app_name}-group-members"
     billing_mode   = "PAY_PER_REQUEST"
     read_capacity  = 0
