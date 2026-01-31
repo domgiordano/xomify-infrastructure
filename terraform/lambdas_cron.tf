@@ -79,3 +79,12 @@ resource "aws_cloudwatch_event_target" "cron_target" {
   arn       = aws_lambda_function.cron[each.value.name].arn
 }
 
+resource "aws_lambda_permission" "allow_cloudwatch_cron" {
+  for_each      = { for lambda in local.cron_lambdas : lambda.name => lambda }
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.cron[each.value.name].function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.cron_schedule[each.value.name].arn
+}
+
