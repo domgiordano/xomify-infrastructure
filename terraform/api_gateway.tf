@@ -77,8 +77,8 @@ module "api" {
   allow_origin          = "*"
 
   # Custom domain
-  domain_name     = local.domain_name
-  certificate_arn = module.web.certificate_arn
+  domain_name     = local.api_domain_name
+  certificate_arn = aws_acm_certificate_validation.api.certificate_arn
 
   services = {
     user          = { path_prefix = "user", endpoints = local.user_endpoints }

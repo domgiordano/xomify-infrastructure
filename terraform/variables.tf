@@ -43,7 +43,7 @@ variable "api_secret_key" {
 variable "domain_suffix" {
   description = "Suffix for the domain of the app."
   type        = string
-  default     = ".com"
+  default     = ".xomware.com"
 }
 
 variable "aws_region" {
@@ -118,6 +118,6 @@ variable "lambda_timeout" {
 variable "from_email" {
   description = "Email address to send from"
   type        = string
-  default     = "noreply@xomify.com"
+  default     = "noreply@xomify.xomware.com"
 }
 
