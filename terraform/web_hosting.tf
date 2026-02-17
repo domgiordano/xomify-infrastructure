@@ -4,7 +4,7 @@
 #**********************
 
 module "web" {
-  source = "git::https://github.com/domgiordano/web-hosting.git?ref=v1.0.0"
+  source = "git::https://github.com/domgiordano/web-hosting.git?ref=v1.1.0"
 
   app_name    = var.app_name
   domain_name = local.domain_name

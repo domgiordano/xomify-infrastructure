@@ -4,7 +4,7 @@
 
 # CloudFront WAF
 module "waf_cloudfront" {
-  source = "git::https://github.com/domgiordano/waf.git?ref=v1.0.0"
+  source = "git::https://github.com/domgiordano/waf.git?ref=v1.1.0"
 
   app_name = "${var.app_name}-cloudfront"
   scope    = "CLOUDFRONT"
@@ -13,7 +13,7 @@ module "waf_cloudfront" {
 
 # API Gateway WAF (with rate limiting)
 module "waf_api_gateway" {
-  source = "git::https://github.com/domgiordano/waf.git?ref=v1.0.0"
+  source = "git::https://github.com/domgiordano/waf.git?ref=v1.1.0"
 
   app_name   = "${var.app_name}-api-gateway"
   scope      = "REGIONAL"

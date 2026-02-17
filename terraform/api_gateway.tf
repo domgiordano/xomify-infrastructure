@@ -66,7 +66,7 @@ locals {
 }
 
 module "api" {
-  source = "git::https://github.com/domgiordano/api-gateway-service.git?ref=v2.1.0"
+  source = "git::https://github.com/domgiordano/api-gateway-service.git?ref=v2.2.0"
 
   app_name              = var.app_name
   stage_name            = "dev"
