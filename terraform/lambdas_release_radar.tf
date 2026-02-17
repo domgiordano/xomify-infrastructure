@@ -1,16 +1,16 @@
 locals {
   release_radar_lambdas = [
     {
-        name = "history"
-        description = "Get user's release radar history"
-        path_part = "history"
-        http_method = "GET"
+      name        = "history"
+      description = "Get user's release radar history"
+      path_part   = "history"
+      http_method = "GET"
     },
     {
-        name = "check"
-        description = "Check user's release radar enrollment status"
-        path_part = "check"
-        http_method = "GET"
+      name        = "check"
+      description = "Check user's release radar enrollment status"
+      path_part   = "check"
+      http_method = "GET"
     },
   ]
 }

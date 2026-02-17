@@ -1,28 +1,28 @@
 locals {
   cron_lambdas = [
     {
-        name = "wrapped"
-        description = "Monthly wrapped generation"
-        cron_schedule = "cron(0 4 1 * ? *)"
-        cron_description = "Trigger Wrapped Lambda function on the first day of every month"
+      name             = "wrapped"
+      description      = "Monthly wrapped generation"
+      cron_schedule    = "cron(0 4 1 * ? *)"
+      cron_description = "Trigger Wrapped Lambda function on the first day of every month"
     },
     {
-        name = "release-radar"
-        description = "Weekly release radar generation"
-        cron_schedule = "cron(0 11 ? * SAT *)"
-        cron_description = "Triggers weekly release radar processing every Saturday at 7 AM Eastern"
+      name             = "release-radar"
+      description      = "Weekly release radar generation"
+      cron_schedule    = "cron(0 11 ? * SAT *)"
+      cron_description = "Triggers weekly release radar processing every Saturday at 7 AM Eastern"
     },
     {
-        name = "wrapped-email"
-        description = "Monthly wrapped emails"
-        cron_schedule = "cron(0 12 1 * ? *)"
-        cron_description = "Trigger Wrapped Email Lambda function on the first day of every month at 12PM UTC"
+      name             = "wrapped-email"
+      description      = "Monthly wrapped emails"
+      cron_schedule    = "cron(0 12 1 * ? *)"
+      cron_description = "Trigger Wrapped Email Lambda function on the first day of every month at 12PM UTC"
     },
     {
-        name = "release-radar-email"
-        description = "Weekly release radar emails"
-        cron_schedule = "cron(0 12 ? * SAT *)"
-        cron_description = "Triggers weekly release radar email every Saturday at 8 AM Eastern"
+      name             = "release-radar-email"
+      description      = "Weekly release radar emails"
+      cron_schedule    = "cron(0 12 ? * SAT *)"
+      cron_description = "Triggers weekly release radar email every Saturday at 8 AM Eastern"
     },
   ]
 }

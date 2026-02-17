@@ -1,28 +1,28 @@
 locals {
   wrapped_lambdas = [
     {
-        name = "update"
-        description = "Update user's wrapped enrollment / data"
-        path_part = "update"
-        http_method = "POST"
+      name        = "update"
+      description = "Update user's wrapped enrollment / data"
+      path_part   = "update"
+      http_method = "POST"
     },
     {
-        name = "all"
-        description = "Get user's wrapped data and history"
-        path_part = "all"
-        http_method = "GET"
+      name        = "all"
+      description = "Get user's wrapped data and history"
+      path_part   = "all"
+      http_method = "GET"
     },
     {
-        name = "month"
-        description = "Get specific month's wrapped data"
-        path_part = "month"
-        http_method = "GET"
+      name        = "month"
+      description = "Get specific month's wrapped data"
+      path_part   = "month"
+      http_method = "GET"
     },
     {
-        name = "year"
-        description = "Get all wrapped data for a specific year"
-        path_part = "year"
-        http_method = "GET"
+      name        = "year"
+      description = "Get all wrapped data for a specific year"
+      path_part   = "year"
+      http_method = "GET"
     },
   ]
 }

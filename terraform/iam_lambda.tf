@@ -17,10 +17,10 @@ resource "aws_iam_role" "lambda_role" {
 }
 
 data "aws_iam_policy_document" "lambda_role_policy" {
-  
+
   # S3 - Scoped to app bucket only
   statement {
-    effect  = "Allow"
+    effect = "Allow"
     actions = [
       "s3:PutObject",
       "s3:GetObject",
@@ -31,14 +31,14 @@ data "aws_iam_policy_document" "lambda_role_policy" {
       "s3:DeleteObject"
     ]
     resources = [
-      aws_s3_bucket.web_app.arn,
-      "${aws_s3_bucket.web_app.arn}/*"
+      module.web.s3_bucket_arn,
+      "${module.web.s3_bucket_arn}/*"
     ]
   }
 
   # SSM - Scoped to app parameters only
   statement {
-    effect  = "Allow"
+    effect = "Allow"
     actions = [
       "ssm:GetParameters",
       "ssm:GetParameter",
@@ -51,7 +51,7 @@ data "aws_iam_policy_document" "lambda_role_policy" {
 
   # CloudWatch Logs
   statement {
-    effect  = "Allow"
+    effect = "Allow"
     actions = [
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
@@ -67,7 +67,7 @@ data "aws_iam_policy_document" "lambda_role_policy" {
 
   # KMS - For DynamoDB encryption
   statement {
-    effect  = "Allow"
+    effect = "Allow"
     actions = [
       "kms:Decrypt",
       "kms:Encrypt",
@@ -81,7 +81,7 @@ data "aws_iam_policy_document" "lambda_role_policy" {
 
   # Lambda - Invoke own functions
   statement {
-    effect  = "Allow"
+    effect = "Allow"
     actions = [
       "lambda:InvokeFunction",
       "lambda:GetFunction"
@@ -93,16 +93,16 @@ data "aws_iam_policy_document" "lambda_role_policy" {
 
   # API Gateway - Execute API
   statement {
-    effect    = "Allow"
-    actions   = ["execute-api:Invoke"]
+    effect  = "Allow"
+    actions = ["execute-api:Invoke"]
     resources = [
-      "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/*/*"
+      "${module.api.rest_api_execution_arn}/*/*/*"
     ]
   }
 
   # X-Ray Tracing
   statement {
-    effect  = "Allow"
+    effect = "Allow"
     actions = [
       "xray:PutTraceSegments",
       "xray:PutTelemetryRecords",
@@ -114,7 +114,7 @@ data "aws_iam_policy_document" "lambda_role_policy" {
 
   # DynamoDB - Scoped to app tables
   statement {
-    effect  = "Allow"
+    effect = "Allow"
     actions = [
       "dynamodb:BatchGetItem",
       "dynamodb:GetItem",

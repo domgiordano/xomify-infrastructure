@@ -1,28 +1,28 @@
 locals {
   ratings_lambdas = [
     {
-        name = "publish"
-        description = "Create / update users rating on a track"
-        path_part = "publish"
-        http_method = "POST"
+      name        = "publish"
+      description = "Create / update users rating on a track"
+      path_part   = "publish"
+      http_method = "POST"
     },
     {
-        name = "all"
-        description = "Get all user's track ratings"
-        path_part = "all"
-        http_method = "GET"
+      name        = "all"
+      description = "Get all user's track ratings"
+      path_part   = "all"
+      http_method = "GET"
     },
     {
-        name = "track"
-        description = "Get a single user's rating for a track"
-        path_part = "track"
-        http_method = "GET"
+      name        = "track"
+      description = "Get a single user's rating for a track"
+      path_part   = "track"
+      http_method = "GET"
     },
     {
-        name = "remove"
-        description = "Remove a user's rating for a track"
-        path_part = "remove"
-        http_method = "DELETE"
+      name        = "remove"
+      description = "Remove a user's rating for a track"
+      path_part   = "remove"
+      http_method = "DELETE"
     },
   ]
 }

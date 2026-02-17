@@ -3,7 +3,7 @@ locals {
 
   # Get the AWS account id
   web_app_account_id = data.aws_caller_identity.web_app_account.account_id
-  
+
   # Standard tags for all resources
   standard_tags = {
     "source"   = "terraform"
@@ -23,7 +23,7 @@ locals {
     GROUP_TRACKS_TABLE_NAME          = aws_dynamodb_table.group_tracks.id
     TRACK_RATINGS_TABLE_NAME         = aws_dynamodb_table.track_ratings.id
     AWS_ACCOUNT_ID                   = data.aws_caller_identity.web_app_account.account_id
-    FROM_EMAIL                       = var.from_email 
+    FROM_EMAIL                       = var.from_email
   }
 
   # API Gateway allowed headers

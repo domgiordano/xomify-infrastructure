@@ -53,12 +53,6 @@ variable "aws_region" {
 }
 
 # CloudFront Variables
-variable "cloudfront_origin_id" {
-  description = "Unique origin id for cloudfront distribution"
-  type        = string
-  default     = "xomifyWeb"
-}
-
 variable "cloudfront_origin_path" {
   description = "Optional element for cloudfront distribution that causes CloudFront to request your content from a directory in your Amazon S3 bucket."
   type        = string

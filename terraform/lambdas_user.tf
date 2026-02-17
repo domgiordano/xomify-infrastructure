@@ -1,22 +1,22 @@
 locals {
   user_lambdas = [
     {
-        name = "update"
-        description = "Update user"
-        path_part = "update"
-        http_method = "POST"
+      name        = "update"
+      description = "Update user"
+      path_part   = "update"
+      http_method = "POST"
     },
     {
-        name = "all"
-        description = "Get all users"
-        path_part = "all"
-        http_method = "GET"
+      name        = "all"
+      description = "Get all users"
+      path_part   = "all"
+      http_method = "GET"
     },
     {
-        name = "data"
-        description = "Get a user's data"
-        path_part = "data"
-        http_method = "GET"
+      name        = "data"
+      description = "Get a user's data"
+      path_part   = "data"
+      http_method = "GET"
     },
   ]
 }

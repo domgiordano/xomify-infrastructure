@@ -1,82 +1,82 @@
 locals {
   groups_lambdas = [
     {
-        name = "list"
-        description = "Get user's groups list"
-        path_part = "list"
-        http_method = "GET"
+      name        = "list"
+      description = "Get user's groups list"
+      path_part   = "list"
+      http_method = "GET"
     },
     {
-        name = "info"
-        description = "Get single group with members and songs"
-        path_part = "info"
-        http_method = "GET"
+      name        = "info"
+      description = "Get single group with members and songs"
+      path_part   = "info"
+      http_method = "GET"
     },
     {
-        name = "create"
-        description = "Create a new group"
-        path_part = "create"
-        http_method = "POST"
+      name        = "create"
+      description = "Create a new group"
+      path_part   = "create"
+      http_method = "POST"
     },
     {
-        name = "update"
-        description = "Update group details"
-        path_part = "update"
-        http_method = "PUT"
+      name        = "update"
+      description = "Update group details"
+      path_part   = "update"
+      http_method = "PUT"
     },
     {
-        name = "remove"
-        description = "Delete a group (admin only)"
-        path_part = "remove"
-        http_method = "DELETE"
+      name        = "remove"
+      description = "Delete a group (admin only)"
+      path_part   = "remove"
+      http_method = "DELETE"
     },
     {
-        name = "add-member"
-        description = "Add a member to group"
-        path_part = "add-member"
-        http_method = "POST"
+      name        = "add-member"
+      description = "Add a member to group"
+      path_part   = "add-member"
+      http_method = "POST"
     },
     {
-        name = "remove-member"
-        description = "Remove a member from group"
-        path_part = "remove-member"
-        http_method = "DELETE"
+      name        = "remove-member"
+      description = "Remove a member from group"
+      path_part   = "remove-member"
+      http_method = "DELETE"
     },
     {
-        name = "leave"
-        description = "Leave a group"
-        path_part = "leave"
-        http_method = "POST"
+      name        = "leave"
+      description = "Leave a group"
+      path_part   = "leave"
+      http_method = "POST"
     },
     {
-        name = "add-song"
-        description = "Add a song to group (with track data)"
-        path_part = "add-song"
-        http_method = "POST"
+      name        = "add-song"
+      description = "Add a song to group (with track data)"
+      path_part   = "add-song"
+      http_method = "POST"
     },
     {
-        name = "add-song-url"
-        description = "Add a song by Spotify URL"
-        path_part = "add-song-url"
-        http_method = "POST"
+      name        = "add-song-url"
+      description = "Add a song by Spotify URL"
+      path_part   = "add-song-url"
+      http_method = "POST"
     },
     {
-        name = "remove-song"
-        description = "Remove a song from group"
-        path_part = "remove-song"
-        http_method = "DELETE"
+      name        = "remove-song"
+      description = "Remove a song from group"
+      path_part   = "remove-song"
+      http_method = "DELETE"
     },
     {
-        name = "song-status"
-        description = "Update user's status on a song"
-        path_part = "song-status"
-        http_method = "PUT"
+      name        = "song-status"
+      description = "Update user's status on a song"
+      path_part   = "song-status"
+      http_method = "PUT"
     },
     {
-        name = "mark-all-listened"
-        description = "Mark all songs as listened for user"
-        path_part = "mark-all-listened"
-        http_method = "POST"
+      name        = "mark-all-listened"
+      description = "Mark all songs as listened for user"
+      path_part   = "mark-all-listened"
+      http_method = "POST"
     },
   ]
 }
