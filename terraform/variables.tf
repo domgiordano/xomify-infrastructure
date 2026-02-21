@@ -4,14 +4,8 @@ variable "app_name" {
   default     = "xomify"
 }
 
-variable "access_key" {
-  description = "AWS access key."
-  type        = string
-  sensitive   = true
-}
-
-variable "secret_key" {
-  description = "AWS secret key."
+variable "aws_role_arn" {
+  description = "ARN of the IAM role for Terraform Cloud to assume via OIDC."
   type        = string
   sensitive   = true
 }
