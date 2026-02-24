@@ -1,19 +1,13 @@
-variable "access_key" {
-  description = "AWS access key for SSM parameter storage."
-  type        = string
-  sensitive   = true
-}
-
-variable "secret_key" {
-  description = "AWS secret key for SSM parameter storage."
-  type        = string
-  sensitive   = true
-}
-
 variable "app_name" {
   description = "The name for the application."
   type        = string
   default     = "xomify"
+}
+
+variable "aws_role_arn" {
+  description = "ARN of the IAM role for Terraform to assume via OIDC."
+  type        = string
+  sensitive   = true
 }
 
 variable "client_id" {

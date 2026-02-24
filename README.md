@@ -31,3 +31,14 @@ Terraform IaC for Xomify - music analytics platform at [xomify.xomware.com](http
 
 - **Organization:** Domjgiordano
 - **Workspace:** xomify-infrastructure
+
+### Authentication (OIDC)
+
+This project uses **OIDC (OpenID Connect)** for Terraform Cloud → AWS authentication, eliminating static IAM access keys.
+
+See [`terraform/oidc.tf`](terraform/oidc.tf) for the full setup guide including:
+- AWS IAM OIDC provider configuration
+- IAM role trust policy
+- Terraform Cloud workspace variable setup
+
+**Reference:** [TFC Dynamic Provider Credentials - AWS](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/dynamic-provider-credentials/aws-configuration)
