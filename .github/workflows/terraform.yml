@@ -55,7 +55,6 @@ jobs:
         run: terraform plan -no-color -input=false -lock=false
         continue-on-error: true
         env:
-          TF_VAR_aws_role_arn: ${{ secrets.AWS_ROLE_ARN }}
           TF_VAR_client_id: ${{ secrets.CLIENT_ID }}
           TF_VAR_client_secret: ${{ secrets.CLIENT_SECRET }}
           TF_VAR_api_access_token: ${{ secrets.API_ACCESS_TOKEN }}
@@ -65,7 +64,6 @@ jobs:
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
         env:
-          TF_VAR_aws_role_arn: ${{ secrets.AWS_ROLE_ARN }}
           TF_VAR_client_id: ${{ secrets.CLIENT_ID }}
           TF_VAR_client_secret: ${{ secrets.CLIENT_SECRET }}
           TF_VAR_api_access_token: ${{ secrets.API_ACCESS_TOKEN }}

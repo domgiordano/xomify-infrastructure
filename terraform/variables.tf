@@ -4,12 +4,6 @@ variable "app_name" {
   default     = "xomify"
 }
 
-variable "aws_role_arn" {
-  description = "ARN of the IAM role for Terraform to assume via OIDC."
-  type        = string
-  sensitive   = true
-}
-
 variable "client_id" {
   description = "Spotify Web API Client ID"
   type        = string
