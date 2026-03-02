@@ -106,6 +106,6 @@ variable "lambda_timeout" {
 variable "from_email" {
   description = "Email address to send from"
   type        = string
-  default     = "noreply@xomify.xomware.com"
+  default     = "noreply@xomware.com"
 }
 
