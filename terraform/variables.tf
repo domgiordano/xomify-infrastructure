@@ -106,20 +106,14 @@ variable "lambda_timeout" {
 variable "from_email" {
   description = "Email address to send from"
   type        = string
-  default     = "noreply@xomware.com"
-}
-
-variable "ses_domain" {
-  description = "Parent domain for SES verification"
-  type        = string
-  default     = "xomware.com"
+  default     = "noreply@xomify.xomware.com"
 }
 
 # API Gateway
 variable "api_stage_name" {
   description = "API Gateway deployment stage name"
   type        = string
-  default     = "prod"
+  default     = "dev"
 }
 
 variable "cors_allowed_origins" {
