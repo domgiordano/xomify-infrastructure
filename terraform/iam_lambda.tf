@@ -110,7 +110,7 @@ data "aws_iam_policy_document" "cron_lambda_role_policy" {
       "ses:SendRawEmail"
     ]
     resources = [
-      "arn:aws:ses:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:identity/${var.ses_domain}",
+      "arn:aws:ses:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:identity/${local.domain_name}",
       "arn:aws:ses:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:identity/${var.from_email}"
     ]
   }
@@ -319,7 +319,7 @@ data "aws_iam_policy_document" "lambda_role_policy" {
       "ses:SendRawEmail"
     ]
     resources = [
-      "arn:aws:ses:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:identity/${var.ses_domain}",
+      "arn:aws:ses:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:identity/${local.domain_name}",
       "arn:aws:ses:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:identity/${var.from_email}"
     ]
   }

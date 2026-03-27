@@ -2,9 +2,9 @@
 # SES - Simple Email Service
 # ============================================
 
-# Domain identity for SES — verify parent domain so lambdas can send from noreply@xomware.com
+# Domain identity for SES — verify xomify.xomware.com subdomain
 resource "aws_ses_domain_identity" "xomify" {
-  domain = var.ses_domain
+  domain = local.domain_name
 }
 
 # Email identity for the specific sender address
@@ -24,7 +24,7 @@ resource "aws_ses_domain_dkim" "xomify" {
 # Domain verification TXT record
 resource "aws_route53_record" "ses_verification" {
   zone_id = data.aws_route53_zone.web_zone.zone_id
-  name    = "_amazonses.${var.ses_domain}"
+  name    = "_amazonses.${local.domain_name}"
   type    = "TXT"
   ttl     = 600
   records = [aws_ses_domain_identity.xomify.verification_token]
@@ -34,7 +34,7 @@ resource "aws_route53_record" "ses_verification" {
 resource "aws_route53_record" "ses_dkim" {
   count   = 3
   zone_id = data.aws_route53_zone.web_zone.zone_id
-  name    = "${aws_ses_domain_dkim.xomify.dkim_tokens[count.index]}._domainkey.${var.ses_domain}"
+  name    = "${aws_ses_domain_dkim.xomify.dkim_tokens[count.index]}._domainkey.${local.domain_name}"
   type    = "CNAME"
   ttl     = 600
   records = ["${aws_ses_domain_dkim.xomify.dkim_tokens[count.index]}.dkim.amazonses.com"]
@@ -53,13 +53,13 @@ resource "aws_ses_domain_identity_verification" "xomify" {
 
 resource "aws_ses_domain_mail_from" "xomify" {
   domain           = aws_ses_domain_identity.xomify.domain
-  mail_from_domain = "mail.${var.ses_domain}"
+  mail_from_domain = "mail.${local.domain_name}"
 }
 
 # MX record for mail from domain
 resource "aws_route53_record" "ses_mail_from_mx" {
   zone_id = data.aws_route53_zone.web_zone.zone_id
-  name    = "mail.${var.ses_domain}"
+  name    = "mail.${local.domain_name}"
   type    = "MX"
   ttl     = 600
   records = ["10 feedback-smtp.${var.aws_region}.amazonses.com"]
@@ -68,7 +68,7 @@ resource "aws_route53_record" "ses_mail_from_mx" {
 # SPF record for mail from domain
 resource "aws_route53_record" "ses_mail_from_spf" {
   zone_id = data.aws_route53_zone.web_zone.zone_id
-  name    = "mail.${var.ses_domain}"
+  name    = "mail.${local.domain_name}"
   type    = "TXT"
   ttl     = 600
   records = ["v=spf1 include:amazonses.com ~all"]
