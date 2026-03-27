@@ -1,11 +1,190 @@
-## Lambda IAM role
+# ============================================
+# Shared assume role policy for Lambda
+# ============================================
 
 data "aws_iam_policy_document" "lambda_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "Service"
-      identifiers = ["lambda.amazonaws.com", "apigateway.amazonaws.com", "states.amazonaws.com"]
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
+# ============================================
+# Authorizer Lambda IAM Role (#51)
+# Minimal permissions — only needs SSM, CloudWatch, KMS
+# ============================================
+
+resource "aws_iam_role" "authorizer_role" {
+  name               = "${var.app_name}-authorizer-exec"
+  tags               = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-authorizer-exec" }))
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+}
+
+data "aws_iam_policy_document" "authorizer_role_policy" {
+  # SSM — read auth parameters
+  statement {
+    effect = "Allow"
+    actions = [
+      "ssm:GetParameters",
+      "ssm:GetParameter",
+      "ssm:GetParametersByPath"
+    ]
+    resources = [
+      "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:parameter/${var.app_name}/*"
+    ]
+  }
+
+  # CloudWatch Logs
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [
+      "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:log-group:/aws/lambda/${var.app_name}-authorizer",
+      "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:log-group:/aws/lambda/${var.app_name}-authorizer:*"
+    ]
+  }
+
+  # X-Ray Tracing
+  statement {
+    effect = "Allow"
+    actions = [
+      "xray:PutTraceSegments",
+      "xray:PutTelemetryRecords",
+      "xray:GetSamplingRules",
+      "xray:GetSamplingTargets"
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_role_policy" "authorizer_role_policy" {
+  name   = "${var.app_name}-authorizer-role-policy"
+  role   = aws_iam_role.authorizer_role.id
+  policy = data.aws_iam_policy_document.authorizer_role_policy.json
+}
+
+# ============================================
+# Cron Lambda IAM Role (#51)
+# Needs DynamoDB, SES, SSM, KMS, CloudWatch
+# ============================================
+
+resource "aws_iam_role" "cron_lambda_role" {
+  name               = "${var.app_name}-cron-lambda-exec"
+  tags               = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-cron-lambda-exec" }))
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+}
+
+data "aws_iam_policy_document" "cron_lambda_role_policy" {
+  # DynamoDB — scoped to app tables
+  statement {
+    effect = "Allow"
+    actions = [
+      "dynamodb:BatchGetItem",
+      "dynamodb:GetItem",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+      "dynamodb:BatchWriteItem",
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:DescribeTable"
+    ]
+    resources = [
+      "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:table/${var.app_name}*",
+      "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:table/${var.app_name}*/index/*"
+    ]
+  }
+
+  # SES — scoped to verified identity (#50)
+  statement {
+    effect = "Allow"
+    actions = [
+      "ses:SendEmail",
+      "ses:SendRawEmail"
+    ]
+    resources = [
+      "arn:aws:ses:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:identity/${var.ses_domain}",
+      "arn:aws:ses:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:identity/${var.from_email}"
+    ]
+  }
+
+  # SSM
+  statement {
+    effect = "Allow"
+    actions = [
+      "ssm:GetParameters",
+      "ssm:GetParameter",
+      "ssm:GetParametersByPath"
+    ]
+    resources = [
+      "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:parameter/${var.app_name}/*"
+    ]
+  }
+
+  # KMS — for DynamoDB encryption
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt",
+      "kms:Encrypt",
+      "kms:GenerateDataKey",
+      "kms:DescribeKey"
+    ]
+    resources = [
+      aws_kms_key.web_app.arn
+    ]
+  }
+
+  # CloudWatch Logs
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [
+      "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:log-group:/aws/lambda/${var.app_name}-cron-*",
+      "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:log-group:/aws/lambda/${var.app_name}-cron-*:*"
+    ]
+  }
+
+  # X-Ray Tracing
+  statement {
+    effect = "Allow"
+    actions = [
+      "xray:PutTraceSegments",
+      "xray:PutTelemetryRecords",
+      "xray:GetSamplingRules",
+      "xray:GetSamplingTargets"
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_role_policy" "cron_lambda_role_policy" {
+  name   = "${var.app_name}-cron-lambda-role-policy"
+  role   = aws_iam_role.cron_lambda_role.id
+  policy = data.aws_iam_policy_document.cron_lambda_role_policy.json
+}
+
+# ============================================
+# API Lambda IAM Role (user, wrapped, friends, groups, ratings, release-radar)
+# ============================================
+
+data "aws_iam_policy_document" "api_lambda_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com", "apigateway.amazonaws.com"]
     }
   }
 }
@@ -13,12 +192,12 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 resource "aws_iam_role" "lambda_role" {
   name               = "${var.app_name}-lambda-exec"
   tags               = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-lambda-exec" }))
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.api_lambda_assume_role.json
 }
 
 data "aws_iam_policy_document" "lambda_role_policy" {
 
-  # S3 - Scoped to app bucket only
+  # S3 — scoped to app bucket only
   statement {
     effect = "Allow"
     actions = [
@@ -36,7 +215,7 @@ data "aws_iam_policy_document" "lambda_role_policy" {
     ]
   }
 
-  # SSM - Scoped to app parameters only
+  # SSM — scoped to app parameters only
   statement {
     effect = "Allow"
     actions = [
@@ -65,7 +244,7 @@ data "aws_iam_policy_document" "lambda_role_policy" {
     ]
   }
 
-  # KMS - For DynamoDB encryption
+  # KMS — for DynamoDB encryption
   statement {
     effect = "Allow"
     actions = [
@@ -79,7 +258,7 @@ data "aws_iam_policy_document" "lambda_role_policy" {
     ]
   }
 
-  # Lambda - Invoke own functions
+  # Lambda — invoke own functions
   statement {
     effect = "Allow"
     actions = [
@@ -91,7 +270,7 @@ data "aws_iam_policy_document" "lambda_role_policy" {
     ]
   }
 
-  # API Gateway - Execute API
+  # API Gateway — execute API
   statement {
     effect  = "Allow"
     actions = ["execute-api:Invoke"]
@@ -112,7 +291,7 @@ data "aws_iam_policy_document" "lambda_role_policy" {
     resources = ["*"]
   }
 
-  # DynamoDB - Scoped to app tables
+  # DynamoDB — scoped to app tables
   statement {
     effect = "Allow"
     actions = [
@@ -131,13 +310,18 @@ data "aws_iam_policy_document" "lambda_role_policy" {
       "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:table/${var.app_name}*/index/*"
     ]
   }
+
+  # SES — scoped to verified identity (#50)
   statement {
     effect = "Allow"
     actions = [
       "ses:SendEmail",
       "ses:SendRawEmail"
     ]
-    resources = ["*"]
+    resources = [
+      "arn:aws:ses:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:identity/${var.ses_domain}",
+      "arn:aws:ses:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:identity/${var.from_email}"
+    ]
   }
 }
 

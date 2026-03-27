@@ -81,7 +81,7 @@ variable "enable_cloudfront_cache" {
 variable "lambda_runtime" {
   description = "Runtime for Lambda functions"
   type        = string
-  default     = "python3.10"
+  default     = "python3.12"
 }
 
 variable "lambda_trace_mode" {
@@ -107,5 +107,57 @@ variable "from_email" {
   description = "Email address to send from"
   type        = string
   default     = "noreply@xomware.com"
+}
+
+variable "ses_domain" {
+  description = "Parent domain for SES verification"
+  type        = string
+  default     = "xomware.com"
+}
+
+# API Gateway
+variable "api_stage_name" {
+  description = "API Gateway deployment stage name"
+  type        = string
+  default     = "prod"
+}
+
+variable "cors_allowed_origins" {
+  description = "Allowed CORS origins for the API"
+  type        = string
+  default     = "https://xomify.xomware.com"
+}
+
+# Route53
+variable "route53_zone_name" {
+  description = "Route53 hosted zone name for DNS records"
+  type        = string
+  default     = "xomware.com"
+}
+
+# Tags
+variable "environment" {
+  description = "Deployment environment"
+  type        = string
+  default     = "production"
+}
+
+variable "owner" {
+  description = "Owner of the infrastructure"
+  type        = string
+  default     = "domgiordano"
+}
+
+# Authorizer-specific settings
+variable "authorizer_memory_size" {
+  description = "Memory size for authorizer Lambda in MB"
+  type        = number
+  default     = 256
+}
+
+variable "authorizer_timeout" {
+  description = "Timeout for authorizer Lambda in seconds"
+  type        = number
+  default     = 30
 }
 

@@ -38,7 +38,7 @@ resource "aws_lambda_function" "cron" {
   runtime          = var.lambda_runtime
   memory_size      = var.lambda_memory_size
   timeout          = var.lambda_timeout
-  role             = aws_iam_role.lambda_role.arn
+  role             = aws_iam_role.cron_lambda_role.arn
 
   environment {
     variables = local.lambda_variables
@@ -60,8 +60,8 @@ resource "aws_lambda_function" "cron" {
   }
 
   depends_on = [
-    aws_iam_role_policy.lambda_role_policy,
-    aws_iam_role.lambda_role
+    aws_iam_role_policy.cron_lambda_role_policy,
+    aws_iam_role.cron_lambda_role
   ]
 }
 
