@@ -4,12 +4,16 @@ resource "aws_ssm_parameter" "client_id" {
   description = "Spotify Web API Client ID"
   type        = "SecureString"
   value       = var.client_id
+
+  lifecycle { ignore_changes = [tags, tags_all] }
 }
 resource "aws_ssm_parameter" "client_secret" {
   name        = "/${var.app_name}/spotify/CLIENT_SECRET"
   description = "Spotify Web API Client Secret"
   type        = "SecureString"
   value       = var.client_secret
+
+  lifecycle { ignore_changes = [tags, tags_all] }
 }
 
 # API
@@ -18,6 +22,8 @@ resource "aws_ssm_parameter" "api_secret_key" {
   description = "API Secret Key"
   type        = "SecureString"
   value       = var.api_secret_key
+
+  lifecycle { ignore_changes = [tags, tags_all] }
 }
 
 resource "aws_ssm_parameter" "api_auth_token" {
@@ -25,6 +31,8 @@ resource "aws_ssm_parameter" "api_auth_token" {
   description = "API Auth Token"
   type        = "SecureString"
   value       = var.api_access_token
+
+  lifecycle { ignore_changes = [tags, tags_all] }
 }
 
 resource "aws_ssm_parameter" "api_id" {
@@ -32,4 +40,6 @@ resource "aws_ssm_parameter" "api_id" {
   description = "API Gateway ID"
   type        = "SecureString"
   value       = module.api.rest_api_id
+
+  lifecycle { ignore_changes = [tags, tags_all] }
 }
