@@ -7,8 +7,10 @@ locals {
 
   # Standard tags for all resources
   standard_tags = {
-    "source"   = "terraform"
-    "app_name" = var.app_name
+    "source"      = "terraform"
+    "app_name"    = var.app_name
+    "environment" = var.environment
+    "owner"       = var.owner
   }
 
   # Lambda environment variables

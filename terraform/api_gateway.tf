@@ -69,12 +69,12 @@ module "api" {
   source = "git::https://github.com/domgiordano/api-gateway-service.git?ref=v2.2.0"
 
   app_name              = var.app_name
-  stage_name            = "dev"
+  stage_name            = var.api_stage_name
   authorizer_invoke_arn = aws_lambda_function.authorizer.invoke_arn
-  authorizer_role_arn   = aws_iam_role.lambda_role.arn
+  authorizer_role_arn   = aws_iam_role.authorizer_role.arn
   tags                  = local.standard_tags
   allow_headers         = local.api_allow_headers
-  allow_origin          = "*"
+  allow_origin          = var.cors_allowed_origins
 
   # Custom domain
   domain_name     = local.api_domain_name
