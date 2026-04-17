@@ -258,3 +258,108 @@ resource "aws_dynamodb_table" "track_ratings" {
   tags = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-track-ratings" }))
 }
 
+########################################
+# 9. xomify-shares
+########################################
+resource "aws_dynamodb_table" "shares" {
+  name           = "${var.app_name}-shares"
+  billing_mode   = "PAY_PER_REQUEST"
+  read_capacity  = 0
+  write_capacity = 0
+  hash_key       = "shareId"
+
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = aws_kms_alias.dynamodb.target_key_arn
+  }
+
+  point_in_time_recovery {
+    enabled = true
+  }
+
+  attribute {
+    name = "shareId"
+    type = "S"
+  }
+
+  attribute {
+    name = "email"
+    type = "S"
+  }
+
+  attribute {
+    name = "createdAt"
+    type = "S"
+  }
+
+  # GSI: Lookup shares by author email, ordered by createdAt
+  global_secondary_index {
+    name            = "email-createdAt-index"
+    hash_key        = "email"
+    range_key       = "createdAt"
+    projection_type = "ALL"
+  }
+
+  tags = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-shares" }))
+}
+
+########################################
+# 10. xomify-share-interactions
+########################################
+resource "aws_dynamodb_table" "share_interactions" {
+  name           = "${var.app_name}-share-interactions"
+  billing_mode   = "PAY_PER_REQUEST"
+  read_capacity  = 0
+  write_capacity = 0
+  hash_key       = "shareId"
+  range_key      = "email"
+
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = aws_kms_alias.dynamodb.target_key_arn
+  }
+
+  point_in_time_recovery {
+    enabled = true
+  }
+
+  attribute {
+    name = "shareId"
+    type = "S"
+  }
+
+  attribute {
+    name = "email"
+    type = "S"
+  }
+
+  tags = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-share-interactions" }))
+}
+
+########################################
+# 11. xomify-invites
+########################################
+resource "aws_dynamodb_table" "invites" {
+  name           = "${var.app_name}-invites"
+  billing_mode   = "PAY_PER_REQUEST"
+  read_capacity  = 0
+  write_capacity = 0
+  hash_key       = "inviteCode"
+
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = aws_kms_alias.dynamodb.target_key_arn
+  }
+
+  point_in_time_recovery {
+    enabled = true
+  }
+
+  attribute {
+    name = "inviteCode"
+    type = "S"
+  }
+
+  tags = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-invites" }))
+}
+
