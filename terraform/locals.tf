@@ -25,6 +25,9 @@ locals {
     GROUP_MEMBERS_TABLE_NAME         = aws_dynamodb_table.group_members.id
     GROUP_TRACKS_TABLE_NAME          = aws_dynamodb_table.group_tracks.id
     TRACK_RATINGS_TABLE_NAME         = aws_dynamodb_table.track_ratings.id
+    SHARES_TABLE_NAME                = aws_dynamodb_table.shares.id
+    SHARE_INTERACTIONS_TABLE_NAME    = aws_dynamodb_table.share_interactions.id
+    INVITES_TABLE_NAME               = aws_dynamodb_table.invites.id
     AWS_ACCOUNT_ID                   = data.aws_caller_identity.web_app_account.account_id
     FROM_EMAIL                       = var.from_email
   }

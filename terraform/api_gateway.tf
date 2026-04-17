@@ -63,6 +63,24 @@ locals {
       invoke_arn  = aws_lambda_function.release_radar[l.name].invoke_arn
     }
   ]
+
+  shares_endpoints = [
+    for l in local.shares_lambdas : {
+      name        = l.name
+      path_part   = l.path_part
+      http_method = l.http_method
+      invoke_arn  = aws_lambda_function.shares[l.name].invoke_arn
+    }
+  ]
+
+  invites_endpoints = [
+    for l in local.invites_lambdas : {
+      name        = l.name
+      path_part   = l.path_part
+      http_method = l.http_method
+      invoke_arn  = aws_lambda_function.invites[l.name].invoke_arn
+    }
+  ]
 }
 
 module "api" {
@@ -87,5 +105,7 @@ module "api" {
     groups        = { path_prefix = "groups", endpoints = local.groups_endpoints }
     ratings       = { path_prefix = "ratings", endpoints = local.ratings_endpoints }
     release-radar = { path_prefix = "release-radar", endpoints = local.release_radar_endpoints }
+    shares        = { path_prefix = "shares", endpoints = local.shares_endpoints }
+    invites       = { path_prefix = "invites", endpoints = local.invites_endpoints }
   }
 }
