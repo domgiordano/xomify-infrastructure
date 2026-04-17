@@ -89,7 +89,7 @@ module "api" {
   app_name              = var.app_name
   stage_name            = var.api_stage_name
   authorizer_invoke_arn = aws_lambda_function.authorizer.invoke_arn
-  authorizer_role_arn   = aws_iam_role.authorizer_role.arn
+  authorizer_role_arn   = aws_iam_role.apigw_authorizer_invoke.arn
   tags                  = local.standard_tags
   allow_headers         = local.api_allow_headers
   allow_origin          = var.cors_allowed_origins
