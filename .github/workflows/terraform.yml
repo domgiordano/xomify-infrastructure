@@ -60,6 +60,9 @@ jobs:
           TF_VAR_client_secret: ${{ secrets.CLIENT_SECRET }}
           TF_VAR_api_access_token: ${{ secrets.API_ACCESS_TOKEN }}
           TF_VAR_api_secret_key: ${{ secrets.API_SECRET_KEY }}
+          TF_VAR_apns_signing_key_p8: ${{ secrets.APNS_SIGNING_KEY_P8 }}
+          TF_VAR_apns_key_id: ${{ secrets.APNS_KEY_ID }}
+          TF_VAR_apns_team_id: ${{ secrets.APNS_TEAM_ID }}
 
       - name: Post Plan to PR
         if: github.event_name == 'pull_request'
@@ -129,3 +132,6 @@ jobs:
           TF_VAR_client_secret: ${{ secrets.CLIENT_SECRET }}
           TF_VAR_api_access_token: ${{ secrets.API_ACCESS_TOKEN }}
           TF_VAR_api_secret_key: ${{ secrets.API_SECRET_KEY }}
+          TF_VAR_apns_signing_key_p8: ${{ secrets.APNS_SIGNING_KEY_P8 }}
+          TF_VAR_apns_key_id: ${{ secrets.APNS_KEY_ID }}
+          TF_VAR_apns_team_id: ${{ secrets.APNS_TEAM_ID }}
