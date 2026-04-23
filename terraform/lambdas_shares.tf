@@ -18,6 +18,18 @@ locals {
       path_part   = "react"
       http_method = "POST"
     },
+    {
+      name        = "delete"
+      description = "Delete a share by id (owner only)"
+      path_part   = "delete"
+      http_method = "DELETE"
+    },
+    {
+      name        = "user"
+      description = "List shares authored by a specific user"
+      path_part   = "user"
+      http_method = "GET"
+    },
   ]
 }
 
