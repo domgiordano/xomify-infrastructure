@@ -12,6 +12,18 @@ locals {
       path_part   = "accept"
       http_method = "POST"
     },
+    {
+      name        = "pending"
+      description = "List pending invites for the authenticated user"
+      path_part   = "pending"
+      http_method = "GET"
+    },
+    {
+      name        = "decline"
+      description = "Decline a pending invite"
+      path_part   = "decline"
+      http_method = "POST"
+    },
   ]
 }
 
