@@ -24,6 +24,12 @@ locals {
       cron_schedule    = "cron(0 12 ? * SAT *)"
       cron_description = "Triggers weekly release radar email every Saturday at 8 AM Eastern"
     },
+    {
+      name             = "shares-digest"
+      description      = "Weekly shares digest"
+      cron_schedule    = "cron(0 18 ? * SUN *)"
+      cron_description = "Triggers weekly shares digest every Sunday at 18:00 UTC (1pm ET / 10am PT)"
+    },
   ]
 }
 
