@@ -43,3 +43,40 @@ resource "aws_ssm_parameter" "api_id" {
 
   lifecycle { ignore_changes = [tags, tags_all] }
 }
+
+# APNs (Apple Push Notification service)
+resource "aws_ssm_parameter" "apns_auth_key" {
+  name        = "/${var.app_name}/apns/AUTH_KEY"
+  description = "APNs .p8 signing key contents (PEM)"
+  type        = "SecureString"
+  value       = var.apns_signing_key_p8
+
+  lifecycle { ignore_changes = [tags, tags_all] }
+}
+
+resource "aws_ssm_parameter" "apns_key_id" {
+  name        = "/${var.app_name}/apns/KEY_ID"
+  description = "APNs auth key ID"
+  type        = "SecureString"
+  value       = var.apns_key_id
+
+  lifecycle { ignore_changes = [tags, tags_all] }
+}
+
+resource "aws_ssm_parameter" "apns_team_id" {
+  name        = "/${var.app_name}/apns/TEAM_ID"
+  description = "Apple Developer Team ID (APNs iss claim)"
+  type        = "SecureString"
+  value       = var.apns_team_id
+
+  lifecycle { ignore_changes = [tags, tags_all] }
+}
+
+resource "aws_ssm_parameter" "apns_bundle_id" {
+  name        = "/${var.app_name}/apns/BUNDLE_ID"
+  description = "iOS bundle identifier (apns-topic header)"
+  type        = "SecureString"
+  value       = var.apns_bundle_id
+
+  lifecycle { ignore_changes = [tags, tags_all] }
+}

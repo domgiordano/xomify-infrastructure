@@ -28,6 +28,12 @@ locals {
     SHARES_TABLE_NAME                = aws_dynamodb_table.shares.id
     SHARE_INTERACTIONS_TABLE_NAME    = aws_dynamodb_table.share_interactions.id
     INVITES_TABLE_NAME               = aws_dynamodb_table.invites.id
+    DEVICE_TOKENS_TABLE_NAME         = aws_dynamodb_table.device_tokens.id
+    NOTIFICATIONS_SEND_FUNCTION_NAME = "${var.app_name}-notifications-send"
+    APNS_AUTH_KEY_PARAM              = aws_ssm_parameter.apns_auth_key.name
+    APNS_KEY_ID_PARAM                = aws_ssm_parameter.apns_key_id.name
+    APNS_TEAM_ID_PARAM               = aws_ssm_parameter.apns_team_id.name
+    APNS_BUNDLE_ID_PARAM             = aws_ssm_parameter.apns_bundle_id.name
     AWS_ACCOUNT_ID                   = data.aws_caller_identity.web_app_account.account_id
     FROM_EMAIL                       = var.from_email
   }

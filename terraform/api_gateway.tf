@@ -81,6 +81,15 @@ locals {
       invoke_arn  = aws_lambda_function.invites[l.name].invoke_arn
     }
   ]
+
+  notifications_endpoints = [
+    for l in local.notifications_lambdas : {
+      name        = l.name
+      path_part   = l.path_part
+      http_method = l.http_method
+      invoke_arn  = aws_lambda_function.notifications[l.name].invoke_arn
+    }
+  ]
 }
 
 module "api" {
@@ -107,5 +116,6 @@ module "api" {
     release-radar = { path_prefix = "release-radar", endpoints = local.release_radar_endpoints }
     shares        = { path_prefix = "shares", endpoints = local.shares_endpoints }
     invites       = { path_prefix = "invites", endpoints = local.invites_endpoints }
+    notifications = { path_prefix = "notifications", endpoints = local.notifications_endpoints }
   }
 }

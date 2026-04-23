@@ -155,3 +155,28 @@ variable "authorizer_timeout" {
   default     = 30
 }
 
+# APNs (Apple Push Notification service)
+variable "apns_signing_key_p8" {
+  description = "Contents of the APNs .p8 signing key (full PEM including BEGIN/END lines). Set via TF_VAR_apns_signing_key_p8 or a gitignored terraform.tfvars — never commit."
+  type        = string
+  sensitive   = true
+}
+
+variable "apns_key_id" {
+  description = "APNs auth key ID (matches the AuthKey_<KEY_ID>.p8 filename)."
+  type        = string
+  sensitive   = true
+}
+
+variable "apns_team_id" {
+  description = "Apple Developer Team ID used as the iss claim when signing APNs provider tokens."
+  type        = string
+  sensitive   = true
+}
+
+variable "apns_bundle_id" {
+  description = "iOS app bundle identifier used as the apns-topic header."
+  type        = string
+  default     = "com.Xomware.Xomify"
+}
+
