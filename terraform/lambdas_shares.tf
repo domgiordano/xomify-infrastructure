@@ -30,6 +30,12 @@ locals {
       path_part   = "user"
       http_method = "GET"
     },
+    {
+      name        = "detail"
+      description = "Full detail view for a single share (listeners + friend ratings)"
+      path_part   = "detail"
+      http_method = "GET"
+    },
   ]
 }
 
