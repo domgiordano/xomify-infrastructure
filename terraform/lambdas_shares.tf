@@ -36,6 +36,36 @@ locals {
       path_part   = "detail"
       http_method = "GET"
     },
+    {
+      name        = "comments-create"
+      description = "Create a comment on a share"
+      path_part   = "comments-create"
+      http_method = "POST"
+    },
+    {
+      name        = "comments-list"
+      description = "List comments on a share"
+      path_part   = "comments-list"
+      http_method = "GET"
+    },
+    {
+      name        = "comments-delete"
+      description = "Delete a comment on a share (author only)"
+      path_part   = "comments-delete"
+      http_method = "DELETE"
+    },
+    {
+      name        = "reactions-toggle"
+      description = "Toggle a reaction (emoji) on a share for the caller"
+      path_part   = "reactions-toggle"
+      http_method = "POST"
+    },
+    {
+      name        = "reactions-list"
+      description = "List reactions on a share"
+      path_part   = "reactions-list"
+      http_method = "GET"
+    },
   ]
 }
 

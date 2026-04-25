@@ -337,7 +337,73 @@ resource "aws_dynamodb_table" "share_interactions" {
 }
 
 ########################################
-# 11. xomify-invites
+# 11. xomify-share-comments
+########################################
+resource "aws_dynamodb_table" "share_comments" {
+  name           = "${var.app_name}-share-comments"
+  billing_mode   = "PAY_PER_REQUEST"
+  read_capacity  = 0
+  write_capacity = 0
+  hash_key       = "shareId"
+  range_key      = "createdAtId"
+
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = aws_kms_alias.dynamodb.target_key_arn
+  }
+
+  point_in_time_recovery {
+    enabled = true
+  }
+
+  attribute {
+    name = "shareId"
+    type = "S"
+  }
+
+  attribute {
+    name = "createdAtId"
+    type = "S"
+  }
+
+  tags = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-share-comments" }))
+}
+
+########################################
+# 12. xomify-share-reactions
+########################################
+resource "aws_dynamodb_table" "share_reactions" {
+  name           = "${var.app_name}-share-reactions"
+  billing_mode   = "PAY_PER_REQUEST"
+  read_capacity  = 0
+  write_capacity = 0
+  hash_key       = "shareId"
+  range_key      = "emailReaction"
+
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = aws_kms_alias.dynamodb.target_key_arn
+  }
+
+  point_in_time_recovery {
+    enabled = true
+  }
+
+  attribute {
+    name = "shareId"
+    type = "S"
+  }
+
+  attribute {
+    name = "emailReaction"
+    type = "S"
+  }
+
+  tags = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-share-reactions" }))
+}
+
+########################################
+# 13. xomify-invites
 ########################################
 resource "aws_dynamodb_table" "invites" {
   name           = "${var.app_name}-invites"
@@ -364,7 +430,7 @@ resource "aws_dynamodb_table" "invites" {
 }
 
 ########################################
-# 12. xomify-device-tokens
+# 14. xomify-device-tokens
 ########################################
 resource "aws_dynamodb_table" "device_tokens" {
   name           = "${var.app_name}-device-tokens"
