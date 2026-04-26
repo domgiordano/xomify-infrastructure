@@ -90,10 +90,20 @@ locals {
       invoke_arn  = aws_lambda_function.notifications[l.name].invoke_arn
     }
   ]
+
+  auth_endpoints = [
+    for l in local.auth_lambdas : {
+      name          = l.name
+      path_part     = l.path_part
+      http_method   = l.http_method
+      invoke_arn    = aws_lambda_function.auth[l.name].invoke_arn
+      authorization = l.authorization
+    }
+  ]
 }
 
 module "api" {
-  source = "git::https://github.com/domgiordano/api-gateway-service.git?ref=v2.2.0"
+  source = "git::https://github.com/domgiordano/api-gateway-service.git?ref=v2.3.0"
 
   app_name              = var.app_name
   stage_name            = var.api_stage_name
@@ -117,5 +127,6 @@ module "api" {
     shares        = { path_prefix = "shares", endpoints = local.shares_endpoints }
     invites       = { path_prefix = "invites", endpoints = local.invites_endpoints }
     notifications = { path_prefix = "notifications", endpoints = local.notifications_endpoints }
+    auth          = { path_prefix = "auth", endpoints = local.auth_endpoints }
   }
 }
