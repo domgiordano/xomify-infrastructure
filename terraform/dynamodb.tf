@@ -430,7 +430,39 @@ resource "aws_dynamodb_table" "invites" {
 }
 
 ########################################
-# 14. xomify-device-tokens
+# 14. xomify-top-items-cache
+########################################
+resource "aws_dynamodb_table" "top_items_cache" {
+  name           = "${var.app_name}-top-items-cache"
+  billing_mode   = "PAY_PER_REQUEST"
+  read_capacity  = 0
+  write_capacity = 0
+  hash_key       = "email"
+
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = aws_kms_alias.dynamodb.target_key_arn
+  }
+
+  point_in_time_recovery {
+    enabled = true
+  }
+
+  attribute {
+    name = "email"
+    type = "S"
+  }
+
+  ttl {
+    attribute_name = "ttl"
+    enabled        = true
+  }
+
+  tags = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-top-items-cache" }))
+}
+
+########################################
+# 15. xomify-device-tokens
 ########################################
 resource "aws_dynamodb_table" "device_tokens" {
   name           = "${var.app_name}-device-tokens"
