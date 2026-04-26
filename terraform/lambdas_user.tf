@@ -18,6 +18,12 @@ locals {
       path_part   = "data"
       http_method = "GET"
     },
+    {
+      name        = "top-items"
+      description = "Live top tracks/artists/genres for the signed-in user (daily DDB cache)"
+      path_part   = "top-items"
+      http_method = "GET"
+    },
   ]
 }
 
