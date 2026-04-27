@@ -100,6 +100,24 @@ locals {
       authorization = l.authorization
     }
   ]
+
+  likes_endpoints = [
+    for l in local.likes_lambdas : {
+      name        = l.name
+      path_part   = l.path_part
+      http_method = l.http_method
+      invoke_arn  = aws_lambda_function.likes[l.name].invoke_arn
+    }
+  ]
+
+  users_endpoints = [
+    for l in local.users_lambdas : {
+      name        = l.name
+      path_part   = l.path_part
+      http_method = l.http_method
+      invoke_arn  = aws_lambda_function.users[l.name].invoke_arn
+    }
+  ]
 }
 
 module "api" {
@@ -128,5 +146,7 @@ module "api" {
     invites       = { path_prefix = "invites", endpoints = local.invites_endpoints }
     notifications = { path_prefix = "notifications", endpoints = local.notifications_endpoints }
     auth          = { path_prefix = "auth", endpoints = local.auth_endpoints }
+    likes         = { path_prefix = "likes", endpoints = local.likes_endpoints }
+    users         = { path_prefix = "users", endpoints = local.users_endpoints }
   }
 }
