@@ -499,3 +499,54 @@ resource "aws_dynamodb_table" "device_tokens" {
   tags = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-device-tokens" }))
 }
 
+########################################
+# 16. xomify-user-likes
+# Per-user saved tracks pushed from iOS on cold open.
+# PK email + SK addedAtTrackId ("<addedAt ISO8601>#<trackId>") gives
+# desc-by-recency paginated reads via ScanIndexForward=False.
+# GSI email-addedAt-index lets queries sort purely on addedAt without
+# needing the trackId tail when the SK isn't useful as a tiebreaker.
+########################################
+resource "aws_dynamodb_table" "user_likes" {
+  name           = "${var.app_name}-user-likes"
+  billing_mode   = "PAY_PER_REQUEST"
+  read_capacity  = 0
+  write_capacity = 0
+  hash_key       = "email"
+  range_key      = "addedAtTrackId"
+
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = aws_kms_alias.dynamodb.target_key_arn
+  }
+
+  point_in_time_recovery {
+    enabled = true
+  }
+
+  attribute {
+    name = "email"
+    type = "S"
+  }
+
+  attribute {
+    name = "addedAtTrackId"
+    type = "S"
+  }
+
+  attribute {
+    name = "addedAt"
+    type = "S"
+  }
+
+  # GSI: query likes by email sorted purely by addedAt
+  global_secondary_index {
+    name            = "email-addedAt-index"
+    hash_key        = "email"
+    range_key       = "addedAt"
+    projection_type = "ALL"
+  }
+
+  tags = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-user-likes" }))
+}
+

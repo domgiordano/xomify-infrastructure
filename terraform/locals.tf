@@ -32,6 +32,8 @@ locals {
     INVITES_TABLE_NAME               = aws_dynamodb_table.invites.id
     DEVICE_TOKENS_TABLE_NAME         = aws_dynamodb_table.device_tokens.id
     TOP_ITEMS_CACHE_TABLE_NAME       = aws_dynamodb_table.top_items_cache.id
+    USER_LIKES_TABLE_NAME            = aws_dynamodb_table.user_likes.id
+    USER_LIKES_EMAIL_ADDED_INDEX     = "email-addedAt-index"
     NOTIFICATIONS_SEND_FUNCTION_NAME = "${var.app_name}-notifications-send"
     APNS_AUTH_KEY_PARAM              = aws_ssm_parameter.apns_auth_key.name
     APNS_KEY_ID_PARAM                = aws_ssm_parameter.apns_key_id.name
