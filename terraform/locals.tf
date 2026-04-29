@@ -27,6 +27,7 @@ locals {
     TRACK_RATINGS_TABLE_NAME         = aws_dynamodb_table.track_ratings.id
     SHARES_TABLE_NAME                = aws_dynamodb_table.shares.id
     SHARE_INTERACTIONS_TABLE_NAME    = aws_dynamodb_table.share_interactions.id
+    SHARE_LISTENERS_TABLE_NAME       = aws_dynamodb_table.share_listeners.id
     SHARE_COMMENTS_TABLE_NAME        = aws_dynamodb_table.share_comments.id
     SHARE_REACTIONS_TABLE_NAME       = aws_dynamodb_table.share_reactions.id
     INVITES_TABLE_NAME               = aws_dynamodb_table.invites.id
