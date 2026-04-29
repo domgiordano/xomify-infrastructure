@@ -337,6 +337,43 @@ resource "aws_dynamodb_table" "share_interactions" {
 }
 
 ########################################
+# 10b. xomify-share-listeners
+########################################
+# Tracks which viewers have listened to which shared track (via Queue / Play
+# Now / share creation). Separate from share-interactions because listened
+# volume is much higher than queued/rated and the lifecycle is different
+# (we may TTL or cap older rows later).
+resource "aws_dynamodb_table" "share_listeners" {
+  name           = "${var.app_name}-share-listeners"
+  billing_mode   = "PAY_PER_REQUEST"
+  read_capacity  = 0
+  write_capacity = 0
+  hash_key       = "shareId"
+  range_key      = "email"
+
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = aws_kms_alias.dynamodb.target_key_arn
+  }
+
+  point_in_time_recovery {
+    enabled = true
+  }
+
+  attribute {
+    name = "shareId"
+    type = "S"
+  }
+
+  attribute {
+    name = "email"
+    type = "S"
+  }
+
+  tags = merge(local.standard_tags, tomap({ "name" = "${var.app_name}-share-listeners" }))
+}
+
+########################################
 # 11. xomify-share-comments
 ########################################
 resource "aws_dynamodb_table" "share_comments" {

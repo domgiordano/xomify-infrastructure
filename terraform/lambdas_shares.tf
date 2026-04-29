@@ -19,6 +19,12 @@ locals {
       http_method = "POST"
     },
     {
+      name        = "listened"
+      description = "Mark one or more shares as listened by the caller (queue / play now)"
+      path_part   = "listened"
+      http_method = "POST"
+    },
+    {
       name        = "delete"
       description = "Delete a share by id (owner only)"
       path_part   = "delete"
